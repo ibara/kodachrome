@@ -10,7 +10,7 @@
 	"dependencies": {
 		"x11": "~>1.0.21"
 	},
-	"description": "Screenshot application for X.",
+	"description": "Screenshot utility for X.",
 	"license": "ISC",
 	"name": "kodachrome"
 }
