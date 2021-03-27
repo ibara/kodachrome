@@ -17,7 +17,7 @@ bool getScreen(string name)
     Window wind = DefaultRootWindow(disp);
     XGetWindowAttributes(disp, wind, &xattr);
     XImage* ximg = XGetImage(disp, wind, 0, 0, xattr.width, xattr.height,
-                            AllPlanes, ZPixmap);
+        AllPlanes, ZPixmap);
     createPNG(name, ximg);
 
     XDestroyImage(ximg);

@@ -41,14 +41,14 @@ void png_destroy_write_struct(png_structpp, png_infopp);
 enum PNG_LIBPNG_VER_STRING = "1.6.37";
 
 png_structp png_create_write_struct(png_const_charp, png_voidp,
-                                    png_error_ptr, png_error_ptr);
+    png_error_ptr, png_error_ptr);
 
 alias png_FILE_p = FILE*;
 
 void png_init_io(png_structrp, png_FILE_p);
 
 void png_set_IHDR(png_const_structrp, png_inforp, png_uint_32, png_uint_32,
-                  int, int, int, int, int);
+    int, int, int, int, int);
 
 alias png_uint_32 = uint;
 
@@ -118,7 +118,7 @@ bool createPNG(string name, XImage* ximg)
     }
 
     png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
-                                                  null, null, null);
+        null, null, null);
     if (png_ptr == null) {
         stderr.writeln("kodachrome: Could not create PNG write struct");
         return false;
@@ -134,8 +134,8 @@ bool createPNG(string name, XImage* ximg)
     png_init_io(png_ptr, fp);
 
     png_set_IHDR(png_ptr, info_ptr, ximg.width, ximg.height, 8,
-                 PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
-                 PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+        PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
+        PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
     title_text.compression = PNG_TEXT_COMPRESSION_NONE;
     title_text.key = cast(char*)"Title";
