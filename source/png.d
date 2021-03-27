@@ -3,6 +3,7 @@ import std.stdio;
 import core.stdc.stdio: fopen, fclose;
 import core.stdc.stdlib: calloc, free;
 import core.sys.posix.setjmp;
+import x11.X;
 import x11.Xlib;
 import kodachrome.x;
 
@@ -105,6 +106,18 @@ static void lsb(ubyte* drow, ubyte* srow, XImage* img)
     }
 }
 
+static void msb(ubyte* drow, ubyte *srow, XImage* img)
+{
+    int sx, dx;
+
+    for (sx = 0, dx = 0; dx < img.chars_per_line - 4; sx = sx + 4) {
+        drow[dx++] = srow[sx + 1];
+        drow[dx++] = srow[sx + 2];
+        drow[dx++] = srow[sx + 3];
+        drow[dx++] = 255;
+    }
+}
+
 bool createPNG(string name, XImage* ximg)
 {
     png_text title_text;
@@ -155,7 +168,11 @@ bool createPNG(string name, XImage* ximg)
     }
 
     for (int i = 0; i < ximg.height; i++) {
-        lsb(drow, srow, ximg);
+        if (ximg.bitmap_bit_order == LSBFirst)
+            lsb(drow, srow, ximg);
+        else
+            msb(drow, srow, ximg);
+
         srow = srow + ximg.chars_per_line;
         png_write_row(png_ptr, drow);
     }
