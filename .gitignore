@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/kodachrome
+kodachrome.so
+kodachrome.dylib
+kodachrome.dll
+kodachrome.a
+kodachrome.lib
+kodachrome-test-*
+*.exe
+*.o
+*.obj
+*.lst

@@ -1,0 +1,16 @@
+{
+	"authors": [
+		"Brian Callahan"
+	],
+	"copyright": "Copyright © 2021, Brian Callahan",
+	"libs": [
+		"x11",
+		"png"
+	],
+	"dependencies": {
+		"x11": "~>1.0.21"
+	},
+	"description": "Screenshot application for X.",
+	"license": "ISC",
+	"name": "kodachrome"
+}
