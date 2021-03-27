@@ -32,12 +32,12 @@ void main(string[] args)
     if (args.length > 2)
         usage();
 
+    Thread.sleep(delayFlag.seconds);
+
     if (args.length == 2)
         fileName = args[1];
     else
         fileName = Clock.currTime().toISOString();
-
-    Thread.sleep(delayFlag.seconds);
 
     auto success = getScreen(fileName);
     if (success == false) {
