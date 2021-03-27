@@ -5,9 +5,6 @@ import core.thread;
 import x11.Xlib;
 import kodachrome.x;
 
-int delayFlag = 3;
-string fileName;
-
 static void badexit()
 {
     import core.stdc.stdlib: exit;
@@ -23,6 +20,9 @@ static void usage()
 
 void main(string[] args)
 {
+    int delayFlag = 3;
+    string fileName;
+
     auto Option = getopt(args, "delay|d", &delayFlag);
 
     if (Option.helpWanted)
