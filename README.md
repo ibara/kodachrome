@@ -20,8 +20,6 @@ added.
 
 Caveats
 -------
-LSB architectures only. That will change soon.
-
 `Kodachrome` is tested on [OpenBSD](https://www.openbsd.org/)/amd64. It
 will probably work on all Posix systems. Windows support is planned.
 
