@@ -1,8 +1,5 @@
 module kodachrome.png;
 import std.stdio;
-import core.stdc.stdio: fopen, fclose;
-import core.stdc.stdlib: calloc, free;
-import core.sys.posix.setjmp;
 import x11.X;
 import x11.Xlib;
 import kodachrome.x;
@@ -94,41 +91,13 @@ enum PNG_FREE_ALL = 0xffffU;
  + This stays.
  +/
 extern(D):
-static void lsb(ubyte* drow, ubyte* srow, XImage* img)
-{
-    int sx, dx;
-
-    for (sx = 0, dx = 0; dx < img.chars_per_line - 4; sx = sx + 4) {
-        drow[dx++] = srow[sx + 2];
-        drow[dx++] = srow[sx + 1];
-        drow[dx++] = srow[sx];
-        drow[dx++] = 255;
-    }
-}
-
-static void msb(ubyte* drow, ubyte *srow, XImage* img)
-{
-    int sx, dx;
-
-    for (sx = 0, dx = 0; dx < img.chars_per_line - 4; sx = sx + 4) {
-        drow[dx++] = srow[sx + 1];
-        drow[dx++] = srow[sx + 2];
-        drow[dx++] = srow[sx + 3];
-        drow[dx++] = 255;
-    }
-}
-
 bool createPNG(string name, XImage* ximg)
 {
     png_text title_text;
 
     string nameWithExt = name ~ ".png";
 
-    FILE *fp = fopen(cast(char*)nameWithExt, "w");
-    if (fp == null) {
-        stderr.writeln("kodachrome: Could not open output file");
-        return false;
-    }
+    File f = File(nameWithExt, "w");
 
     png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
         null, null, null);
@@ -144,7 +113,7 @@ bool createPNG(string name, XImage* ximg)
         return false;
     }
 
-    png_init_io(png_ptr, fp);
+    png_init_io(png_ptr, f.getFP());
 
     png_set_IHDR(png_ptr, info_ptr, ximg.width, ximg.height, 8,
         PNG_COLOR_TYPE_RGB_ALPHA, PNG_INTERLACE_NONE,
@@ -157,30 +126,40 @@ bool createPNG(string name, XImage* ximg)
 
     png_write_info(png_ptr, info_ptr);
 
-    ubyte* srow = cast(ubyte*)ximg.data;
-    ubyte* drow = cast(ubyte*)calloc(1, ximg.width * 4);
-    if (drow == null) {
-        stderr.writeln("kodachrome: Out of memory!");
-
-        fclose(fp);
-        png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1);
-        png_destroy_write_struct(&png_ptr, null);
-    }
+    ubyte* row = cast(ubyte*)ximg.data;
 
     for (int i = 0; i < ximg.height; i++) {
-        if (ximg.bitmap_bit_order == LSBFirst)
-            lsb(drow, srow, ximg);
-        else
-            msb(drow, srow, ximg);
+        if (ximg.bitmap_bit_order == LSBFirst) {
+            for (int idx = 0; idx < ximg.chars_per_line - 4; idx += 4) {
+                ubyte t1 = row[idx + 2];
+                ubyte t2 = row[idx + 1];
+                ubyte t3 = row[idx];
 
-        srow = srow + ximg.chars_per_line;
-        png_write_row(png_ptr, drow);
+                row[idx] = t1;
+                row[idx + 1] = t2;
+                row[idx + 2] = t3;
+                row[idx + 3] = 255;
+            }
+        } else {
+            for (int idx = 0; idx < ximg.chars_per_line - 4; idx += 4) {
+                ubyte t1 = row[idx + 1];
+                ubyte t2 = row[idx + 2];
+                ubyte t3 = row[idx + 3];
+
+                row[idx] = t1;
+                row[idx + 1] = t2;
+                row[idx + 2] = t3;
+                row[idx + 3] = 255;
+            }
+        }
+
+        png_write_row(png_ptr, row);
+        row += ximg.chars_per_line;
     }
     png_write_end(png_ptr, null);
 
-    fclose(fp);
+    f.close();
 
-    free(drow);
     png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1);
     png_destroy_write_struct(&png_ptr, null);
 
