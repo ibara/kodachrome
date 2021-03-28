@@ -129,12 +129,12 @@ bool createPNG(string name, XImage* ximg)
     ubyte* row = cast(ubyte*)ximg.data;
     for (int i = 0; i < ximg.height; i++) {
         if (ximg.bitmap_bit_order == LSBFirst) {
-            for (int idx = 0; idx < ximg.chars_per_line - 4; idx += 4) {
+            for (int idx = 0; idx < ximg.chars_per_line; idx += 4) {
                 swap(row[idx], row[idx + 2]);
                 row[idx + 3] = 255;
             }
         } else {
-            for (int idx = 0; idx < ximg.chars_per_line - 4; idx += 4) {
+            for (int idx = 0; idx < ximg.chars_per_line; idx += 4) {
                 ubyte t1 = row[idx + 1];
                 ubyte t2 = row[idx + 2];
                 ubyte t3 = row[idx + 3];
