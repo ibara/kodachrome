@@ -1,5 +1,6 @@
 module kodachrome.png;
 import std.stdio;
+import std.algorithm.mutation;
 import x11.X;
 import x11.Xlib;
 import kodachrome.x;
@@ -95,10 +96,6 @@ bool createPNG(string name, XImage* ximg)
 {
     png_text title_text;
 
-    string nameWithExt = name ~ ".png";
-
-    File f = File(nameWithExt, "w");
-
     png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
         null, null, null);
     if (png_ptr == null) {
@@ -112,6 +109,9 @@ bool createPNG(string name, XImage* ximg)
         png_destroy_write_struct(&png_ptr, null);
         return false;
     }
+
+    string nameWithExt = name ~ ".png";
+    File f = File(nameWithExt, "w");
 
     png_init_io(png_ptr, f.getFP());
 
@@ -127,17 +127,10 @@ bool createPNG(string name, XImage* ximg)
     png_write_info(png_ptr, info_ptr);
 
     ubyte* row = cast(ubyte*)ximg.data;
-
     for (int i = 0; i < ximg.height; i++) {
         if (ximg.bitmap_bit_order == LSBFirst) {
             for (int idx = 0; idx < ximg.chars_per_line - 4; idx += 4) {
-                ubyte t1 = row[idx + 2];
-                ubyte t2 = row[idx + 1];
-                ubyte t3 = row[idx];
-
-                row[idx] = t1;
-                row[idx + 1] = t2;
-                row[idx + 2] = t3;
+                swap(row[idx], row[idx + 2]);
                 row[idx + 3] = 255;
             }
         } else {
