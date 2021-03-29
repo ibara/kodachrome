@@ -1,6 +1,7 @@
 module kodachrome.png;
 import std.stdio;
 import std.algorithm.mutation;
+import std.string;
 import x11.X;
 import x11.Xlib;
 import kodachrome.x;
@@ -120,8 +121,8 @@ bool createPNG(string name, XImage* ximg)
         PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
     title_text.compression = PNG_TEXT_COMPRESSION_NONE;
-    title_text.key = cast(char*)"Title";
-    title_text.text = cast(char*)name;
+    title_text.key = cast(char*)toStringz("Title");
+    title_text.text = cast(char*)toStringz(name);
     png_set_text(png_ptr, info_ptr, &title_text, 1);
 
     png_write_info(png_ptr, info_ptr);
