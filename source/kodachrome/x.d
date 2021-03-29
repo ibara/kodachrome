@@ -14,14 +14,16 @@ bool getScreen(string name)
         stderr.writeln("kodachrome: Could not open X Display");
         return false;
     }
+
     Window wind = DefaultRootWindow(disp);
     XGetWindowAttributes(disp, wind, &xattr);
     XImage* ximg = XGetImage(disp, wind, 0, 0, xattr.width, xattr.height,
         AllPlanes, ZPixmap);
-    createPNG(name, ximg);
+
+    auto success = createPNG(name, ximg);
 
     XDestroyImage(ximg);
     XCloseDisplay(disp);
 
-    return true;
+    return success;
 }
