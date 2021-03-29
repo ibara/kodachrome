@@ -9,7 +9,7 @@ import kodachrome.x;
  + This part needs to be spun off into its own library.
  +/
 extern(C):
-alias png_byte = ubyte;
+alias png_byte = char;
 alias png_bytep = png_byte*;
 alias png_const_bytep = const(png_byte)*;
 
@@ -126,7 +126,7 @@ bool createPNG(string name, XImage* ximg)
 
     png_write_info(png_ptr, info_ptr);
 
-    ubyte* row = cast(ubyte*)ximg.data;
+    char* row = ximg.data;
     for (int i = 0; i < ximg.height; i++) {
         if (ximg.bitmap_bit_order == LSBFirst) {
             for (int idx = 0; idx < ximg.chars_per_line; idx += 4) {
