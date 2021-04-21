@@ -2,7 +2,6 @@ module kodachrome.x;
 import std.stdio;
 import x11.X;
 import x11.Xlib;
-import x11.Xutil;
 import kodachrome.png;
 
 bool getScreen(string name)
@@ -22,7 +21,7 @@ bool getScreen(string name)
 
     auto success = createPNG(name, ximg);
 
-    XDestroyImage(ximg);
+    ximg.f.destroy_image(ximg);
     XCloseDisplay(disp);
 
     return success;
